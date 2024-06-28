@@ -1,3 +1,10 @@
 from django.shortcuts import render
+from django.views.generic import DetailView
 
-# Create your views here.
+from .models import Profile
+
+
+class ProfileDetailView(DetailView):
+    model = Profile
+    template_name = 'profiles/profile.html'
+    context_object_name = 'profile'
