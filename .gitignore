@@ -1,3 +1,4 @@
 /m_venv/
 .idea/
 __pycache__/
+/messenger/db.sqlite3

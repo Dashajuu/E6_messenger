@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     'chat',
     'profiles',
+    'main_app',
 
     'allauth',
     'allauth.account',

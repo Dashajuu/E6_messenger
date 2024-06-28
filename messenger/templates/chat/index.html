@@ -9,6 +9,8 @@
     <input id="room-name-input" type="text" size="100"><br>
     <input id="room-name-submit" type="button" value="Enter">
 
+    <div id="chats_names_list"></div>
+
     <script>
         document.querySelector('#room-name-input').focus();
         document.querySelector('#room-name-input').onkeyup = function(e) {
@@ -21,6 +23,17 @@
             var roomName = document.querySelector('#room-name-input').value;
             window.location.pathname = '/chat/' + roomName + '/';
         };
+
+        const url = '/chats/';
+
+        fetch(url)
+            .then(response => response.text())
+            .then(data => {
+                chats_names_list.innerHTML = data;
+            })
+            .catch(error => {
+                console.log('ERROR chats_list', error);
+            });
     </script>
 </body>
 </html>
