@@ -30,3 +30,6 @@ class Membership(models.Model):
     group = models.ForeignKey(GroupChat, on_delete=models.CASCADE)
     joined_at = models.DateTimeField(auto_now_add=True)
 
+
+class PrivateMessage(Message):
+    private_chat = models.ForeignKey('GroupChat', on_delete=models.CASCADE)

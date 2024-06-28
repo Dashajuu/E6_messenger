@@ -9,5 +9,19 @@
     {{ profile.user.email }}
     {{ profile.username }}
     {{ profile.avatar }}
+
+    {{ profile.user.id|json_script:"user_id" }}
+    {{ chat_id|json_script:"chat_id" }}
+
+    <input id="private_message_submit" type="button" value="Write">
+
+    <script>
+        const userId = JSON.parse(document.getElementById('user_id').textContent);
+        const chatId = JSON.parse(document.getElementById('chat_id').textContent);
+
+        document.querySelector('#private_message_submit').onclick = function(e) {
+            console.log(userId, chatId, user_sender)
+        }
+    </script>
 </body>
 </html>

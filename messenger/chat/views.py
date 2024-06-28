@@ -16,3 +16,7 @@ def room(request, room_name):
         'messages': messages,
         'members': members,
     })
+
+
+def private_chat(request, pk):
+    return render(request, 'chat/private_chat.html', {"chat_id": pk})
