@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
 
@@ -10,18 +12,35 @@
     {{ profile.username }}
     {{ profile.avatar }}
 
-    {{ profile.user.id|json_script:"user_id" }}
-    {{ chat_id|json_script:"chat_id" }}
+    {{ profile.user.id|json_script:"profile_user_id" }}
 
     <input id="private_message_submit" type="button" value="Write">
 
     <script>
-        const userId = JSON.parse(document.getElementById('user_id').textContent);
-        const chatId = JSON.parse(document.getElementById('chat_id').textContent);
+        $(function () {
+            $('#private_message_submit').click(function () {
+                const profileUserId = JSON.parse($('#profile_user_id').text());
 
-        document.querySelector('#private_message_submit').onclick = function(e) {
-            console.log(userId, chatId, user_sender)
-        }
+                console.log(profileUserId);
+
+                $.ajax({
+                    url: '/chat/private/create_private_chat/',
+                    data: { 'profile_user': profileUserId },
+                    type: 'get',
+                    cache: false,
+                    success: function(data) {
+                        if (data) {
+                            window.location.href = `/chat/private/create_private_chat/?profile_user=${profileUserId}`;
+                        } else {
+                            console.error('Chat ID not found');
+                        }
+                    },
+                    error: function(error) {
+                        console.error('Error creating private chat:', error);
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>

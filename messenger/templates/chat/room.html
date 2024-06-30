@@ -5,9 +5,13 @@
     <title>Chat Room</title>
 </head>
 <body>
-    <textarea id="chat-log" cols="100" rows="20" readonly>{% for message in messages %}
-{{ message.sender.email }} {{ message }} --- {{ message.data_created }}
-{% endfor %}</textarea><br>
+    <div id="chat-log">
+        {% for message in messages %}
+            <div>
+            {{ message.sender.email }} {{ message }} --- {{ message.data_created }}
+            </div>
+        {% endfor %}
+    </div>
     <input id="chat-message-input" type="text" size="100"><br>
     <input id="chat-message-submit" type="button" value="Send">
     {{ room_name|json_script:"room-name" }}
@@ -29,7 +33,7 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').value += (data.user + ': ' + data.message + '\n');
+            document.querySelector('#chat-log').innerHTML += `<div>${data.user}: ${data.message}</div>`;
         };
 
         chatSocket.onclose = function(e) {

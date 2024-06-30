@@ -32,4 +32,12 @@ class Membership(models.Model):
 
 
 class PrivateMessage(Message):
-    private_chat = models.ForeignKey('GroupChat', on_delete=models.CASCADE)
+    private_chat = models.ForeignKey('PrivateChat', on_delete=models.CASCADE)
+
+
+class PrivateChat(models.Model):
+    user1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='private_chat_user1')
+    user2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='private_chat_user2')
+
+    class Meta:
+        unique_together = ['user1', 'user2']

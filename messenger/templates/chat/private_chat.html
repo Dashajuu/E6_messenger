@@ -5,26 +5,32 @@
     <title>Title</title>
 </head>
 <body>
-    <textarea id="chat-log" cols="100" rows="20" readonly></textarea><br>
+    <div id="chat-log">
+        {% for message in messages %}
+            <div>
+            {{ message.sender.email }} {{ message }} --- {{ message.data_created }}
+            </div>
+        {% endfor %}
+    </div>
     <input id="chat-message-input" type="text" size="100"><br>
     <input id="chat-message-submit" type="button" value="Send">
-    {{ user_id|json_script:"user_id" }}
+    {{ chat_id|json_script:"chat_id" }}
 
     <script>
-        const userId = JSON.parse(document.getElementById('user_id').textContent);
+        const chatId= JSON.parse(document.getElementById('chat_id').textContent);
 
         const chatSocket = new WebSocket(
             'ws://'
             + window.location.host
             + '/ws/chat/private/'
-            + userId
+            + chatId
             + '/'
         );
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
             console.log(data.event);
-            document.querySelector('#chat-log').value += (data.user + ': ' + data.message + '\n');
+            document.querySelector('#chat-log').innerHTML += `<div>${data.user}: ${data.message}</div>`;
         };
 
         chatSocket.onclose = function(e) {
