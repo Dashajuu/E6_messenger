@@ -8,16 +8,18 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
-    {% if request.user %}
+    {% if profile.user == request.user %}
         <a href="{% url 'my_profile_update' %}">Edit profile</a>
     {% endif %}
 
     {{ profile.user.email }}
     {{ profile.username }}
 
-    <img src="{{ profile.avatar.url }}" alt="{{ profile.user.email }}'s avatar" style="width:150px;height:150px;">
-    {{ profile.avatar }}
-
+    {% if profile.avatar %}
+        <img src="{{ profile.avatar.url }}" alt="{{ profile.user.email }}'s avatar" style="width:150px;height:150px;">
+    {% else %}
+        <div>no avatar</div>
+    {% endif %}
     {{ profile.user.id|json_script:"profile_user_id" }}
 
     <input id="private_message_submit" type="button" value="Write">
