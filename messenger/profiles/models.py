@@ -14,9 +14,6 @@ class User(AbstractUser):
 
     objects = UserManager()
 
-    def __str__(self):
-        return self.email
-
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -24,6 +21,3 @@ class Profile(models.Model):
     second_name = models.CharField(max_length=150, null=True, blank=True)
     username = models.CharField(max_length=150, null=True, blank=True)
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
-
-    def __str__(self):
-        return self.username

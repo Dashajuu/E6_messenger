@@ -30,3 +30,14 @@ class Membership(models.Model):
     group = models.ForeignKey(GroupChat, on_delete=models.CASCADE)
     joined_at = models.DateTimeField(auto_now_add=True)
 
+
+class PrivateMessage(Message):
+    private_chat = models.ForeignKey('PrivateChat', on_delete=models.CASCADE)
+
+
+class PrivateChat(models.Model):
+    user1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='private_chat_user1')
+    user2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='private_chat_user2')
+
+    class Meta:
+        unique_together = ['user1', 'user2']

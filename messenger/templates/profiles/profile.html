@@ -3,11 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
 
     {{ profile.user.email }}
     {{ profile.username }}
     {{ profile.avatar }}
+
+    {{ profile.user.id|json_script:"profile_user_id" }}
+
+    <input id="private_message_submit" type="button" value="Write">
+
+    <script>
+        $(function () {
+            $('#private_message_submit').click(function () {
+                const profileUserId = JSON.parse($('#profile_user_id').text());
+
+                console.log(profileUserId);
+
+                $.ajax({
+                    url: '/chat/private/create_private_chat/',
+                    data: { 'profile_user': profileUserId },
+                    type: 'get',
+                    cache: false,
+                    success: function(data) {
+                        if (data) {
+                            window.location.href = `/chat/private/create_private_chat/?profile_user=${profileUserId}`;
+                        } else {
+                            console.error('Chat ID not found');
+                        }
+                    },
+                    error: function(error) {
+                        console.error('Error creating private chat:', error);
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

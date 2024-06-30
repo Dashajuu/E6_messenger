@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <title>Chat Room</title>
+    <meta charset="UTF-8">
+    <title>Title</title>
 </head>
 <body>
     <div id="chat-log">
@@ -14,25 +14,22 @@
     </div>
     <input id="chat-message-input" type="text" size="100"><br>
     <input id="chat-message-submit" type="button" value="Send">
-    {{ room_name|json_script:"room-name" }}
-    <div id="members">
-        {% for member in members %}
-            {{ member.user }} <br>
-        {% endfor %}
-    </div>
+    {{ chat_id|json_script:"chat_id" }}
+
     <script>
-        const roomName = JSON.parse(document.getElementById('room-name').textContent);
+        const chatId= JSON.parse(document.getElementById('chat_id').textContent);
 
         const chatSocket = new WebSocket(
             'ws://'
             + window.location.host
-            + '/ws/chat/'
-            + roomName
+            + '/ws/chat/private/'
+            + chatId
             + '/'
         );
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
+            console.log(data.event);
             document.querySelector('#chat-log').innerHTML += `<div>${data.user}: ${data.message}</div>`;
         };
 
