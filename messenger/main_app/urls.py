@@ -4,5 +4,6 @@ from . import views
 
 
 urlpatterns = [
-    path("chats/", views.GroupChatList.as_view(), name="group_chat_list"),
+    path("", views.home, name="home"),
+    path("group_chat_list/", views.GroupChatList.as_view(), name="group_chat_list"),
 ]

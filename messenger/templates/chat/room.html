@@ -17,7 +17,8 @@
     {{ room_name|json_script:"room-name" }}
     <div id="members">
         {% for member in members %}
-            {{ member.user }} <br>
+            <a href="{% url 'profile_detail' pk=member.user.profile.id %}" target="_blank">
+            {{ member.user }}</a><br>
         {% endfor %}
     </div>
     <script>

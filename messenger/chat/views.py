@@ -1,15 +1,12 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from django.conf import settings
 
 from .models import GroupChat, GroupMessage, Membership, PrivateChat, PrivateMessage
 from profiles.models import User
 
 
-def index(request):
-    return render(request, "chat/index.html")
-
-
+@login_required(login_url="/accounts/login/")
 def room(request, room_name):
     group = GroupChat.objects.filter(name=room_name).first()
     members = Membership.objects.filter(group=group)
@@ -21,6 +18,7 @@ def room(request, room_name):
     })
 
 
+@login_required(login_url="/accounts/login/")
 def private_chat_view(request, pk):
     chat = PrivateChat.objects.get(pk=pk)
     messages = PrivateMessage.objects.filter(private_chat=chat).order_by('data_created')
@@ -30,6 +28,7 @@ def private_chat_view(request, pk):
     })
 
 
+@login_required(login_url="/accounts/login/")
 def create_private_chat(request):
     profile_user = request.GET.get('profile_user')
 
