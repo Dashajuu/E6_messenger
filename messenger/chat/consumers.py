@@ -3,6 +3,7 @@ import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 
+from profiles.models import Profile
 from .services import create_or_add_group, create_group_message, create_private_message
 
 
@@ -32,21 +33,23 @@ class ChatConsumer(WebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
         user = self.user.email
+        profile = Profile.objects.get(user=self.user)
 
         create_group_message(self.user, message, self.room_name)
 
         # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
-            self.room_group_name, {"type": "chat.message", "message": message, "user": user}
+            self.room_group_name, {"type": "chat.message", "message": message, "user": user, "profile": profile}
         )
 
     # Receive message from room group
     def chat_message(self, event):
         message = event["message"]
         user = event["user"]
+        profile = event["profile"]
 
         # Send message to WebSocket
-        self.send(text_data=json.dumps({"message": message, "user": user}))
+        self.send(text_data=json.dumps({"message": message, "user": user, "profile": profile}))
 
 
 class PrivateChatConsumer(WebsocketConsumer):
