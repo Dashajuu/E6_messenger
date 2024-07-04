@@ -9,13 +9,42 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <title>Home</title>
-    <style>
-        body {
-            background-color: #000000;
-            background-size: cover;
-            background-repeat: no-repeat;
-        }
-    </style>
+        <style>
+            body {
+                background-color: #000000;
+                background-size: cover;
+                background-repeat: no-repeat;
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+                margin: 0;
+            }
+            .chat-main {
+                display: flex;
+                flex-direction: row;
+                flex-grow: 1;
+                width: 100%;
+                overflow: hidden;
+            }
+            .chat {
+                display: flex;
+                flex-direction: column;
+                width: 85%;
+                padding-left: 25px;
+                flex-grow: 1;
+            }
+            #chat-log {
+                flex-grow: 1;
+                overflow-y: auto;
+            }
+            .input-container {
+                display: flex;
+                align-items: center;
+            }
+            #chat-message-input {
+                flex-grow: 1;
+            }
+        </style>
 </head>
 <body>
     <div class="chat-main">
@@ -24,24 +53,34 @@
                 {% for message in messages %}
                     {% if message.sender == request.user %}
                         <div class="message-current-user">
-                            <div class="message-data">{{ message.data_created }}</div>
+                            <div class="message-data">{{ message.data_created|date:"d.m.Y" }}
+                                {{ message.data_created|time:"H:i" }}</div>
                             <div class="message">{{ message }}</div>
-                            <div class="message-avatar"><img src="{{ message.sender.profile.avatar.url }}" width="50"></div>
+                            <div class="message-avatar">
+                                <a href="{% url 'profile_detail' pk=message.sender.profile.id %}" target="_blank">
+                                <img src="{{ message.sender.profile.avatar.url }}"></a>
+                            </div>
                         </div>
                     {% else %}
                         <div class="message-others">
-                            <div class="message-avatar"><img src="{{ message.sender.profile.avatar.url }}" width="50"></div>
+                            <div class="message-avatar">
+                                <a href="{% url 'profile_detail' pk=message.sender.profile.id %}" target="_blank">
+                                    <img src="{{ message.sender.profile.avatar.url }}"></a>
+                            </div>
                             <div class="message">{{ message }}</div>
-                            <div class="message-data">{{ message.data_created }}</div>
+                            <div class="message-data">{{ message.data_created|time:"H:i" }}
+                                {{ message.data_created|date:"d.m.Y" }}</div>
                         </div>
                     {% endif %}
                 {% endfor %}
             </div>
-            <input id="chat-message-input" type="text" size="100"><br>
-            <input id="chat-message-submit" type="button" value="Send">
+            <div class="input-container">
+                <input id="chat-message-input" type="text" size="100">
+                <input id="chat-message-submit" type="button" value="Send">
+            </div>
             {{ room_name|json_script:"room-name" }}
         </div>
-        <div id="members">
+        <div id="members" class="members">
             {% for member in members %}
                 <a href="{% url 'profile_detail' pk=member.user.profile.id %}" target="_blank">
                 {{ member.user }}</a><br>
@@ -61,9 +100,15 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').innerHTML += `<div class="message-current-user">
-            <div class="message">${data.message}</div><div class="message-avatar">
-            <img src="{{ data.profile.avatar.url }}" width="50"></div></div>`;
+            console.log(data.profile);
+            document.querySelector('#chat-log').innerHTML += `
+            <div class="message-current-user">
+                <div class="message">${data.message}</div>
+                <div class="message-avatar">
+                    <a href="/profile/${data.profile_id}/">
+                    <img src="${data.profile_avatar}"></a>
+                </div>
+            </div>`;
         };
 
         chatSocket.onclose = function(e) {
@@ -85,7 +130,15 @@
                 'message': message
             }));
             messageInputDom.value = '';
+
+            const chatLog = document.getElementById('chat-log');
+            chatLog.scrollTop = chatLog.scrollHeight;
         };
-    </script>
+
+        window.onload = function() {
+            const chatLog = document.getElementById('chat-log');
+            chatLog.scrollTop = chatLog.scrollHeight;
+        };
+        </script>
 </body>
 </html>
