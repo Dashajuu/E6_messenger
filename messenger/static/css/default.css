@@ -234,6 +234,7 @@ body {
     flex-direction: row;
     width: 100%;
     height: 100%;
+    padding-bottom: 30px;
 }
 
 .chat {
@@ -242,6 +243,7 @@ body {
     height: 100%;
     width: 70%;
     padding-left: 25px;
+    padding-right: 25px;
     flex-grow: 1;
 }
 
@@ -253,7 +255,20 @@ body {
 
 .input-container {
     display: flex;
+    flex-direction: column;
     align-items: center;
+}
+
+.input-container input[type='text'] {
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    border: none;
+    border-bottom: 3px solid rgba(255, 0, 214, 0.7) !important;
+    background-color: transparent !important;
+    font-size: 16px;
+    color: #FFFFFF;
+    margin-bottom: 10px;
 }
 
 #chat-message-input {
@@ -299,6 +314,35 @@ body {
     color: #FFFFFF;
 }
 
+*::-webkit-scrollbar {
+  height: 7px;
+  width: 7px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #000000;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #FFFFFF;
+  border-radius: 3px;
+  border: 1px solid transparent;
+}
+
 .members {
     width: 15%;
+}
+
+.members a {
+    text-decoration: none;
+    color: #FFFFFF;
+    transition: color 0.5s;
+}
+
+.members a:hover {
+    color: #FFFFFF;
+    text-shadow: 0 0 5px #FF00D6,
+              0 0 25px #FF00D6,
+              0 0 50px #FF00D6,
+              0 0 100px #FF00D6;
 }

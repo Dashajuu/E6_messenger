@@ -3,12 +3,11 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title>Chat Room</title>
     <link rel="stylesheet" href="{% static 'css/default.css' %}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <title>Home</title>
+    <title>Chat room {{ room_name }}</title>
         <style>
             body {
                 background-color: #000000;
@@ -36,10 +35,6 @@
             #chat-log {
                 flex-grow: 1;
                 overflow-y: auto;
-            }
-            .input-container {
-                display: flex;
-                align-items: center;
             }
             #chat-message-input {
                 flex-grow: 1;
@@ -75,12 +70,14 @@
                 {% endfor %}
             </div>
             <div class="input-container">
-                <input id="chat-message-input" type="text" size="100">
-                <input id="chat-message-submit" type="button" value="Send">
+                <input id="chat-message-input" type="text" placeholder="Write your message">
+                <input id="chat-message-submit" type="button" value="Send" class="sign-in-btn">
             </div>
             {{ room_name|json_script:"room-name" }}
+            {{ request.user.id|json_script:"current-user-id" }}
         </div>
         <div id="members" class="members">
+            <div class="comment">members</div>
             {% for member in members %}
                 <a href="{% url 'profile_detail' pk=member.user.profile.id %}" target="_blank">
                 {{ member.user }}</a><br>
@@ -89,6 +86,7 @@
     </div>
     <script>
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
+        const currentUserId = JSON.parse(document.getElementById('current-user-id').textContent);
 
         const chatSocket = new WebSocket(
             'ws://'
@@ -100,15 +98,26 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            console.log(data.profile);
-            document.querySelector('#chat-log').innerHTML += `
-            <div class="message-current-user">
-                <div class="message">${data.message}</div>
-                <div class="message-avatar">
-                    <a href="/profile/${data.profile_id}/">
-                    <img src="${data.profile_avatar}"></a>
-                </div>
-            </div>`;
+
+            if (data.user === currentUserId) {
+                document.querySelector('#chat-log').innerHTML += `
+                <div class="message-current-user">
+                    <div class="message">${data.message}</div>
+                    <div class="message-avatar">
+                        <a href="/profile/${data.profile_id}/">
+                        <img src="${data.profile_avatar}"></a>
+                    </div>
+                </div>`;
+            } else {
+                document.querySelector('#chat-log').innerHTML += `
+                <div class="message-others">
+                    <div class="message-avatar">
+                        <a href="/profile/${data.profile_id}/">
+                        <img src="${data.profile_avatar}"></a>
+                    </div>
+                    <div class="message">${data.message}</div>
+                </div>`;
+            };
         };
 
         chatSocket.onclose = function(e) {
