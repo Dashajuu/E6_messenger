@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
+
 from .models import GroupChat, GroupMessage, Membership, PrivateChat, PrivateMessage
 from profiles.models import User
 
