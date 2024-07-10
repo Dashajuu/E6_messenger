@@ -3,26 +3,54 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-
+    <link rel="stylesheet" href="{% static 'css/default.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <title>{{ profile.user.email }}</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <style>
+        body {
+            background-color: #000000;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+    </style>
 </head>
 <body>
-    {% if profile.user == request.user %}
-        <a href="{% url 'my_profile_update' %}">Edit profile</a>
-    {% endif %}
 
-    {{ profile.user.email }}
-    {{ profile.username }}
+    <div class="sign-in-form profile">
+        <div class="profile-main">
+            <div class="profile-avatar">
+                    <img src="{{ profile.avatar.url }}" alt="{{ profile.user.email }}'s avatar" style="width:150px;height:150px;">
+            </div>
 
-    {% if profile.avatar %}
-        <img src="{{ profile.avatar.url }}" alt="{{ profile.user.email }}'s avatar" style="width:150px;height:150px;">
-    {% else %}
-        <div>no avatar</div>
-    {% endif %}
-    {{ profile.user.id|json_script:"profile_user_id" }}
+            <div class="profile-info" >
+                {{ profile.user.email }} <br>
 
-    <input id="private_message_submit" type="button" value="Write">
+                {% if profile.username is not None %}
+                    {{ profile.username }}
+                {% else %}
+                    <div class="grey">no username</div>
+                {% endif %}
+            </div>
+        </div>
+
+        {{ profile.user.id|json_script:"profile_user_id" }}
+
+        <div class="profile-btns">
+            {% if profile.user == request.user %}
+                <div class="profile-edit-btn">
+                    <a href="{% url 'my_profile_update' %}">Edit profile</a></div>
+            {% endif %}
+
+            <input id="private_message_submit" type="button" value="Write" class="sign-in-btn">
+            {% if profile.user == request.user %}
+                <div class="profile-logout-btn">
+                    <a href="{% url 'account_logout' %}">Logout</a></div>
+            {% endif %}
+        </div>
+    </div>
 
     <script>
         $(function () {

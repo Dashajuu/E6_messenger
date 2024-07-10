@@ -13,6 +13,8 @@ def home(request):
 
 class GroupChatList(LoginRequiredMixin, ListView):
     model = GroupChat
+    ordering = '-pk'
     template_name = 'chat/group_chat_list.html'
     context_object_name = 'group_chat_list'
     raise_exception = False
+    paginate_by = 10

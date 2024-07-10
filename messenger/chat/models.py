@@ -40,4 +40,15 @@ class PrivateChat(models.Model):
     user2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='private_chat_user2')
 
     class Meta:
-        unique_together = ['user1', 'user2']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user1', 'user2'],
+                name='unique_private_chat',
+                condition=models.Q(user1__lt=models.F('user2')) | models.Q(user1__gt=models.F('user2'))
+            )
+        ]
+
+    def save(self, *args, **kwargs):
+        if self.user1.pk > self.user2.pk:
+            self.user1, self.user2 = self.user2, self.user1
+        super().save(*args, **kwargs)

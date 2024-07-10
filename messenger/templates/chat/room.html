@@ -1,28 +1,92 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title>Chat Room</title>
+    <link rel="stylesheet" href="{% static 'css/default.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <title>Chat room {{ room_name }}</title>
+        <style>
+            body {
+                background-color: #000000;
+                background-size: cover;
+                background-repeat: no-repeat;
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+                margin: 0;
+            }
+            .chat-main {
+                display: flex;
+                flex-direction: row;
+                flex-grow: 1;
+                width: 100%;
+                overflow: hidden;
+            }
+            .chat {
+                display: flex;
+                flex-direction: column;
+                width: 85%;
+                padding-left: 25px;
+                flex-grow: 1;
+            }
+            #chat-log {
+                flex-grow: 1;
+                overflow-y: auto;
+            }
+            #chat-message-input {
+                flex-grow: 1;
+            }
+        </style>
 </head>
 <body>
-    <div id="chat-log">
-        {% for message in messages %}
-            <div>
-            {{ message.sender.email }} {{ message }} --- {{ message.data_created }}
+    <div class="chat-main">
+        <div class="chat">
+            <div id="chat-log">
+                {% for message in messages %}
+                    {% if message.sender == request.user %}
+                        <div class="message-current-user">
+                            <div class="message-data">{{ message.data_created|date:"d.m.Y" }}
+                                {{ message.data_created|time:"H:i" }}</div>
+                            <div class="message">{{ message }}</div>
+                            <div class="message-avatar">
+                                <a href="{% url 'profile_detail' pk=message.sender.profile.id %}" target="_blank">
+                                <img src="{{ message.sender.profile.avatar.url }}"></a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="message-others">
+                            <div class="message-avatar">
+                                <a href="{% url 'profile_detail' pk=message.sender.profile.id %}" target="_blank">
+                                    <img src="{{ message.sender.profile.avatar.url }}"></a>
+                            </div>
+                            <div class="message">{{ message }}</div>
+                            <div class="message-data">{{ message.data_created|time:"H:i" }}
+                                {{ message.data_created|date:"d.m.Y" }}</div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
             </div>
-        {% endfor %}
-    </div>
-    <input id="chat-message-input" type="text" size="100"><br>
-    <input id="chat-message-submit" type="button" value="Send">
-    {{ room_name|json_script:"room-name" }}
-    <div id="members">
-        {% for member in members %}
-            <a href="{% url 'profile_detail' pk=member.user.profile.id %}" target="_blank">
-            {{ member.user }}</a><br>
-        {% endfor %}
+            <div class="input-container">
+                <input id="chat-message-input" type="text" placeholder="Write your message">
+                <input id="chat-message-submit" type="button" value="Send" class="sign-in-btn">
+            </div>
+            {{ room_name|json_script:"room-name" }}
+            {{ request.user.id|json_script:"current-user-id" }}
+        </div>
+        <div id="members" class="members">
+            <div class="comment">members</div>
+            {% for member in members %}
+                <a href="{% url 'profile_detail' pk=member.user.profile.id %}" target="_blank">
+                {{ member.user }}</a><br>
+            {% endfor %}
+        </div>
     </div>
     <script>
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
+        const currentUserId = JSON.parse(document.getElementById('current-user-id').textContent);
 
         const chatSocket = new WebSocket(
             'ws://'
@@ -34,7 +98,26 @@
 
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            document.querySelector('#chat-log').innerHTML += `<div>${data.user}: ${data.message}</div>`;
+
+            if (data.user === currentUserId) {
+                document.querySelector('#chat-log').innerHTML += `
+                <div class="message-current-user">
+                    <div class="message">${data.message}</div>
+                    <div class="message-avatar">
+                        <a href="/profile/${data.profile_id}/">
+                        <img src="${data.profile_avatar}"></a>
+                    </div>
+                </div>`;
+            } else {
+                document.querySelector('#chat-log').innerHTML += `
+                <div class="message-others">
+                    <div class="message-avatar">
+                        <a href="/profile/${data.profile_id}/">
+                        <img src="${data.profile_avatar}"></a>
+                    </div>
+                    <div class="message">${data.message}</div>
+                </div>`;
+            };
         };
 
         chatSocket.onclose = function(e) {
@@ -56,7 +139,15 @@
                 'message': message
             }));
             messageInputDom.value = '';
+
+            const chatLog = document.getElementById('chat-log');
+            chatLog.scrollTop = chatLog.scrollHeight;
         };
-    </script>
+
+        window.onload = function() {
+            const chatLog = document.getElementById('chat-log');
+            chatLog.scrollTop = chatLog.scrollHeight;
+        };
+        </script>
 </body>
 </html>

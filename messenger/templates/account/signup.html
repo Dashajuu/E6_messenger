@@ -1,0 +1,37 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% block content %}
+
+<div class="sign-in-form">
+  <div class="sign-in-headers">
+    <div class="headers uppercase header-a"><a href="{{ login_url }}">{% trans "Sign In" %}</a></div>
+    <div class="headers uppercase">{% trans "Sign Up" %}</div>
+  </div>
+  <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+    <div class="form-input">
+      <input type="email" name="email" placeholder="Email address" autocomplete="email" maxlength="320" required=""
+             id="id_email">
+    </div>
+
+    <div class="form-input">
+      <input type="password" name="password1" placeholder="Password" autocomplete="new-password" required=""
+             aria-describedby="id_password1_helptext" id="id_password1">
+    </div>
+
+    <div class="form-input">
+      <input type="password" name="password2" placeholder="Password (again)" autocomplete="new-password" required=""
+             id="id_password2">
+    </div>
+
+    {% if redirect_field_value %}
+    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+    {% endif %}
+    <button type="submit" class="sign-in-btn">{% trans "Sign Up" %}</button>
+  </form>
+</div>
+
+{% endblock %}

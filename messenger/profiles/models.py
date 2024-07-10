@@ -21,7 +21,7 @@ class Profile(models.Model):
     first_name = models.CharField(max_length=150, null=True, blank=True)
     second_name = models.CharField(max_length=150, null=True, blank=True)
     username = models.CharField(max_length=150, null=True, blank=True)
-    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
+    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True, default='avatars/no_avatar.png')
 
     def get_absolute_url(self):
         return reverse('profile_detail', args=[str(self.id)])

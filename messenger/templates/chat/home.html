@@ -1,16 +1,38 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title>Chat Rooms</title>
+    <link rel="stylesheet" href="{% static 'css/default.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <title>Home</title>
+    <style>
+        body {
+            background-color: #000000;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+    </style>
 </head>
 <body>
-<a href="{% url 'profile_detail' request.user.id %}">Мой аккаунт</a>
-    What chat room would you like to enter?<br>
-    <input id="room-name-input" type="text" size="100"><br>
-    <input id="room-name-submit" type="button" value="Enter">
+    <div class="header">
+        <a href="{% url 'profile_detail' pk=request.user.profile.id %}" class="header-btn">My account</a>
+    </div>
 
-    <div id="chats_names_list"></div>
+    <div class="main">
+        <div class="sign-in-form form-input">
+            <div class="main-heading headers">
+               What chat room would you like to enter?
+            </div>
+            <input id="room-name-input" type="text" size="100" class="main-name-input"><br>
+            <input id="room-name-submit" type="button" value="Enter" class="main-input-btn sign-in-btn">
+        </div>
+
+        <div id="chats_names_list" class="chats_names_list"></div>
+        <div class="comment">recent chats</div>
+    </div>
 
     <script>
         document.querySelector('#room-name-input').focus();
