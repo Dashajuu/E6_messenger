@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from chat.models import GroupChat
+from profiles.models import Profile
 
 
 @login_required(login_url="/accounts/login/")
@@ -18,3 +19,10 @@ class GroupChatList(LoginRequiredMixin, ListView):
     context_object_name = 'group_chat_list'
     raise_exception = False
     paginate_by = 10
+
+
+class UserProfileList(LoginRequiredMixin, ListView):
+    model = Profile
+    template_name = 'profiles/profile_list.html'
+    context_object_name = 'profile_list'
+    raise_exception = False

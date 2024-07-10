@@ -18,6 +18,7 @@
 </head>
 <body>
     <div class="header">
+        <a href="{% url 'profile_list' %}" class="header-btn">Profiles</a>
         <a href="{% url 'profile_detail' pk=request.user.profile.id %}" class="header-btn">My account</a>
     </div>
 
