@@ -25,15 +25,26 @@ def private_chat_view(request, pk):
     return render(request, 'chat/private_chat.html', {
         "chat_id": pk,
         'messages': messages,
+        'user1': chat.user1,
+        'user2': chat.user2
     })
 
 
 @login_required(login_url="/accounts/login/")
 def create_private_chat(request):
-    profile_user = request.GET.get('profile_user')
-
+    profile_user_id = request.GET.get('profile_user')
     current_user = request.user
-    profile_user = User.objects.get(pk=profile_user)
+
+    if profile_user_id is None:
+        return redirect('some_error_page')
+
+    try:
+        profile_user = User.objects.get(pk=profile_user_id)
+    except User.DoesNotExist:
+        return redirect('some_error_page')
+
+    if current_user.pk > profile_user.pk:
+        current_user, profile_user = profile_user, current_user
 
     private_chat, created = PrivateChat.objects.get_or_create(user1=current_user, user2=profile_user)
 

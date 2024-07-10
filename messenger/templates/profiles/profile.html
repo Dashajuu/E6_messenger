@@ -45,6 +45,10 @@
             {% endif %}
 
             <input id="private_message_submit" type="button" value="Write" class="sign-in-btn">
+            {% if profile.user == request.user %}
+                <div class="profile-logout-btn">
+                    <a href="{% url 'account_logout' %}">Logout</a></div>
+            {% endif %}
         </div>
     </div>
 

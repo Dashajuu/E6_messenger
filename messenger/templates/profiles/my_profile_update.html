@@ -15,29 +15,26 @@
             background-size: cover;
             background-repeat: no-repeat;
         }
-
-        <!-- form-input input[type='text'] {
-            width
-        } -->
     </style>
 </head>
 <body>
     <div class="sign-in-form">
         <form class="signup" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-              <div class="form-input">
+              <div class="edit-form-input">
                   <input type="text" name="first_name" maxlength="150" id="id_first_name" placeholder="First name">
               </div>
-              <div class="form-input">
+              <div class="edit-form-input">
                   <input type="text" name="second_name" maxlength="150" id="id_second_name" placeholder="Last name">
               </div>
-              <div class="form-input">
-                  <input type="text" name="username" maxlength="150" id="id_username" placeholder="username">
+              <div class="edit-form-input">
+                  <input type="text" name="username" maxlength="150" id="id_username" placeholder="Username">
               </div>
-              <div class="form-input">
-                  <input type="file" name="avatar" accept="image/*" id="id_avatar">
+              <div class="edit-form-input">
+                  <input type="file" name="avatar" accept="image/*" id="id_avatar" class="file-input">
+                   <label for="id_avatar" class="file-label">Сhange avatar</label>
               </div>
-            <button type="submit">Save changes</button>
+            <button type="submit" class="sign-in-btn">Save changes</button>
         </form>
     </div>
 </body>
